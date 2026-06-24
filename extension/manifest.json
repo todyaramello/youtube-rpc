@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube RPC",
+  "version": "1.0.0",
+  "description": "Shows your YouTube watching activity on Discord via Rich Presence",
+  "icons": {
+    "128": "icon.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://youtube.com/*",
+    "https://www.youtube.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://youtube.com/*",
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "YouTube RPC",
+    "default_icon": {
+      "128": "icon.png"
+    }
+  }
+}
