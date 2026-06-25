@@ -71,7 +71,10 @@ function setActivity(data) {
   currentActivity = data;
 
   if (!data || !data.title) {
-    rpc.clearActivity();
+    rpc.request('SET_ACTIVITY', {
+      pid: process.pid,
+      activity: null
+    }).catch(console.error);
     return;
   }
 
@@ -116,7 +119,10 @@ function setActivity(data) {
     ];
   }
 
-  rpc.setActivity(activity).catch(console.error);
+  rpc.request('SET_ACTIVITY', {
+    pid: process.pid,
+    activity
+  }).catch(console.error);
 }
 
 const wss = new WebSocket.Server({
