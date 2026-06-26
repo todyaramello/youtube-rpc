@@ -1,4 +1,5 @@
 let prevHash = '';
+let wasPlaying = false;
 
 function formatTime(seconds) {
   seconds = Math.floor(seconds || 0);
@@ -79,15 +80,24 @@ function tick() {
   const info = getTrackInfo();
   const hash = getHash(info);
 
-  if (hash !== prevHash && info.title) {
+  if (info.isPlaying && hash !== prevHash && info.title) {
     prevHash = hash;
+    wasPlaying = true;
 
-    try {
-      chrome.runtime.sendMessage({
-        type: 'TRACK_UPDATE',
-        data: info
-      });
-    } catch (e) { }
+    chrome.runtime.sendMessage({
+      type: 'TRACK_UPDATE',
+      data: info
+    }).catch(() => {});
+  } else if (wasPlaying && !info.isPlaying) {
+    wasPlaying = false;
+    prevHash = '';
+
+    chrome.runtime.sendMessage({
+      type: 'TRACK_UPDATE',
+      data: null
+    }).catch(() => {});
+  } else if (!location.pathname.startsWith('/watch')) {
+    wasPlaying = false;
   }
 }
 
