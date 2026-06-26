@@ -91,32 +91,45 @@ function setActivity(data) {
 
     type: 3,
 
-    largeImageKey: 'youtube',
-    largeImageText: 'YouTube',
-
-    smallImageKey: data.isPlaying
-      ? 'playing'
-      : 'paused',
-
-    smallImageText: data.isPlaying
-      ? 'Watching'
-      : 'Paused',
+    assets: {
+      large_image: data.artUrl || 'youtube',
+      large_text: data.title.substring(0, 128),
+      small_image: data.isPlaying
+        ? 'playing'
+        : 'paused',
+      small_text: data.isPlaying
+        ? 'Playing'
+        : 'Paused'
+    },
 
     instance: false
   };
 
   if (data.isPlaying && total > 0) {
-    activity.startTimestamp = now - elapsed;
-    activity.endTimestamp = now + (total - elapsed);
+    activity.timestamps = {
+      start: now - elapsed,
+      end: now + (total - elapsed)
+    };
   }
 
+  const buttons = [];
+
   if (data.trackUrl) {
-    activity.buttons = [
-      {
-        label: 'Watch on YouTube',
-        url: data.trackUrl
-      }
-    ];
+    buttons.push({
+      label: 'Watch Video',
+      url: data.trackUrl
+    });
+  }
+
+  if (data.channelUrl) {
+    buttons.push({
+      label: 'View Channel',
+      url: data.channelUrl
+    });
+  }
+
+  if (buttons.length) {
+    activity.buttons = buttons;
   }
 
   rpc.request('SET_ACTIVITY', {

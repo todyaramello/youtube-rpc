@@ -18,6 +18,8 @@ function getTrackInfo() {
   const info = {
     title: '',
     artist: '',
+    channelUrl: '',
+    artUrl: '',
     isPlaying: false,
     currentTime: '0:00',
     totalTime: '0:00',
@@ -48,6 +50,13 @@ function getTrackInfo() {
 
   if (channelElement) {
     info.artist = channelElement.textContent.trim();
+    info.channelUrl = channelElement.href;
+  }
+
+  const videoId = new URLSearchParams(location.search).get('v');
+
+  if (videoId) {
+    info.artUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
   }
 
   info.isPlaying = !video.paused;
